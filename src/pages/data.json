@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "employee_name": "TigerNixon",
+    "employee_salary": 320800,
+    "employee_age": 41,
+    "email": "tiger@gmail.com",
+    "designation": "Developer",
+    "file": "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png"
+  },
+  {
+    "id": 2,
+    "employee_name": "GarrettWinters",
+    "employee_salary": 170750,
+    "employee_age": 53,
+    "email": "garrett@gmail.com",
+    "designation": "Tester",
+    "file": "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png"
+  },
+  {
+    "id": 3,
+    "employee_name": "AshtonCox",
+    "employee_salary": 86000,
+    "employee_age": 56,
+    "email": "ashton@gmail.com",
+    "designation": "Analyst",
+    "file": "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png"
+  },
+  {
+    "id": 4,
+    "employee_name": "CedricKelly",
+    "employee_salary": 433060,
+    "employee_age": 22,
+    "email": "cedric@gmail.com",
+    "designation": "Dataengineer",
+    "file": "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png"
+  },
+  {
+    "id": 5,
+    "employee_name": "AiriSatou",
+    "employee_salary": 162700,
+    "employee_age": 33,
+    "email": "airi@gmail.com",
+    "designation": "Software",
+    "file": "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-512.png"
+  }
+]
