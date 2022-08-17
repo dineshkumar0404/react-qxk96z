@@ -15,7 +15,7 @@ class App extends Component {
       showModel: false,
     };
   }
-  passEmployee(e) {
+  passemployee(e) {
     this.state.users.push(e);
     this.setState({ users: this.state.users });
   }
@@ -47,9 +47,9 @@ class App extends Component {
       return (
         <tr key={index} style={{ textAlign: 'center' }}>
           <td>{users.id}</td>
-          <td>{users.employee_name}</td>
-          <td>{users.employee_salary}</td>
-          <td>{users.employee_age}</td>
+          <td>{users.employeename}</td>
+          <td>{users.employeesalary}</td>
+          <td>{users.employeeage}</td>
           <td>{users.email}</td>
           <td>{users.designation}</td>
           {/* <td><img src={users.file} style={{ height: "50px" }} alt="logo" /></td> */}
@@ -58,7 +58,7 @@ class App extends Component {
             <button
               className="btn btn-danger m-1"
               onClick={() => {
-                this.DeleteRow(index, users.employee_name);
+                this.DeleteRow(index, users.employeename);
               }}
             >
               Delete
@@ -83,7 +83,7 @@ class App extends Component {
 
     return (
       <div>
-        <Addmodel passEmployee={(e) => this.passEmployee(e)} />
+        <Addmodel passemployee={(e) => this.passemployee(e)} />
 
         <table className="table table-striped ">
           <thead style={{ textAlign: 'center' }}>
@@ -134,13 +134,13 @@ class App extends Component {
                       {this.state.selecteduser ? this.state.selecteduser.id : ''}
                     </td>
                     <td>
-                      {this.state.selecteduser ? this.state.selecteduser.employee_name : ''}
+                      {this.state.selecteduser ? this.state.selecteduser.employeename : ''}
                     </td>
                     <td>
-                      {this.state.selecteduser ? this.state.selecteduser.employee_salary : ''}
+                      {this.state.selecteduser ? this.state.selecteduser.employeesalary : ''}
                     </td>
                     <td>
-                      {this.state.selecteduser ? this.state.selecteduser.employee_age : ''}
+                      {this.state.selecteduser ? this.state.selecteduser.employeeage : ''}
                     </td>
                     <td>
                       {this.state.selecteduser ? this.state.selecteduser.email : ''}
@@ -234,7 +234,7 @@ class App extends Component {
                 </div>
                 <div className="col-md-6">
                   {this.state.selecteduser
-                    ? this.state.selecteduser.employee_name
+                    ? this.state.selecteduser.employeename
                     : ''}
                 </div>
               </div>
@@ -255,7 +255,7 @@ class App extends Component {
                 </div>
                 <div className="col-md-6">
                   {this.state.selecteduser
-                    ? this.state.selecteduser.employee_salary
+                    ? this.state.selecteduser.employeesalary
                     : ''}
                 </div>
               </div>
@@ -276,7 +276,7 @@ class App extends Component {
                 </div>
                 <div className="col-md-6">
                   {this.state.selecteduser
-                    ? this.state.selecteduser.employee_age
+                    ? this.state.selecteduser.employeeage
                     : ''}
                 </div>
               </div>

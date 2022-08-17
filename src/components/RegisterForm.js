@@ -17,17 +17,14 @@ class RegisterForm extends React.Component {
   handleChange(e) {
     let fields = this.state.fields;
     fields[e.target.name] = e.target.value;
-    this.setState({
-      fields,
-    });
+    this.setState({ fields });
   }
 
   submituserRegistrationForm(e) {
     e.preventDefault();
     if (this.validateForm()) {
-      let fields = {};
-
-      this.setState({ fields: fields });
+      // let fields = {};
+      // this.setState({ fields: fields });
 
       if (this.props.data) {
         this.props.updateForm(this.state.fields);
@@ -64,41 +61,44 @@ class RegisterForm extends React.Component {
 
     if (!fields['id']) {
       formIsValid = false;
-      errors['id'] = '*Please enter your id.';
+      errors['id'] = '*Please enter  ID.';
     }
 
-    if (!fields['employee_name']) {
+    if (!fields['employeename']) {
       formIsValid = false;
-      errors['employee_name'] = '*Please enter your Employee name.';
+      errors['employeename'] = '*Please enter EmployeeName.';
     }
-    if (typeof fields['employee_name'] !== 'undefined') {
-      if (!fields['employee_name'].match(/^[a-zA-Z ]*$/)) {
+    if (typeof fields['employeename'] !== 'undefined') {
+      if (!fields['employeename'].match(/^[a-zA-Z ]*$/)) {
         formIsValid = false;
-        errors['employee_name'] = '*Please enter alphabet characters only.';
+        errors['employeename'] = '*Please enter alphabet characters only.';
       }
     }
 
-    if (!fields['employee_salary']) {
+    if (!fields['employeesalary']) {
       formIsValid = false;
-      errors['employee_salary'] = '*Please enter your EmployeeSalary';
+      errors['employeesalary'] = '*Please enter EmployeeSalary';
     }
 
-    if (!fields['employee_age']) {
+    if (!fields['employeeage']) {
       formIsValid = false;
-      errors['employee_age'] = '*Please enter your EmployeeAge.';
+      errors['employeeage'] = '*Please enter EmployeeAge.';
     }
-    if (typeof fields['employee_age'] !== 'undefined') {
-      //regular expression for employee_age validation
+    if (typeof fields['employeeage'] !== 'undefined') {
+      //regular expression for employeeage validation
       var pattern = new RegExp(/^(?:1[8-9]|[2-5][0-9]|60)$$/);
-      if (!pattern.test(fields['employee_age'])) {
+      if (fields['employeeage'] === '') {
         formIsValid = false;
-        errors['employee_age'] = '*Please enter age between 18 to 60.';
+        errors['employeeage'] = '*Please enter EmployeeAge .';
+      } else if (!pattern.test(fields['employeeage'])) {
+        formIsValid = false;
+        errors['employeeage'] = '*Please enter EmployeeAge between 18 to 60.';
       }
     }
 
     if (!fields['email']) {
       formIsValid = false;
-      errors['email'] = '*Please enter your email-ID.';
+      errors['email'] = '*Please enter Email.';
     }
 
     if (typeof fields['email'] !== 'undefined') {
@@ -106,15 +106,19 @@ class RegisterForm extends React.Component {
       pattern = new RegExp(
         /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
       );
-      if (!pattern.test(fields['email'])) {
+
+      if (fields['email'] === '') {
         formIsValid = false;
-        errors['email'] = '*Please enter valid email-ID.';
+        errors['email'] = '*Please enter your Email.';
+      } else if (!pattern.test(fields['email'])) {
+        formIsValid = false;
+        errors['email'] = '*Please enter valid Email.';
       }
     }
 
     if (!fields['designation']) {
       formIsValid = false;
-      errors['designation'] = '*Please enter your Designation.';
+      errors['designation'] = '*Please enter Designation.';
     }
     if (typeof fields['designation'] !== 'undefined') {
       if (!fields['designation'].match(/^[a-zA-Z ]*$/)) {
@@ -125,7 +129,7 @@ class RegisterForm extends React.Component {
 
     if (!fields['file']) {
       formIsValid = false;
-      errors['file'] = '*Please choose your ProfileImage.';
+      errors['file'] = '*Please choose ProfileImage.';
     }
 
     this.setState({
@@ -158,61 +162,58 @@ class RegisterForm extends React.Component {
               defaultValue={
                 this.props.data ? this.props.data.id : this.state.fields.id
               }
-              onChange={(e) => {
-                const re = /^[A-Za-z]+$/;
-                if (e.target.value === '' || re.test(e.target.value))
-                  this.setState({ value: e.target.value });
-                this.handleChange;
-              }}
+              onChange={this.handleChange}
             />
+
             <div className="errorMsg">{this.state.errors.id}</div>
 
             <label>EmployeeName:</label>
             <input
               type="text"
-              name="employee_name"
+              name="employeename"
               minLength="4"
               maxLength="24"
               autoComplete="off"
               style={{ marginTop: '10px' }}
               defaultValue={
                 this.props.data
-                  ? this.props.data.employee_name
-                  : this.state.fields.employee_name
+                  ? this.props.data.employeename
+                  : this.state.fields.employeename
               }
               onChange={this.handleChange}
             />
-            <div className="errorMsg">{this.state.errors.employee_name}</div>
+            {/* <p>Note:Please enter the alphabet only</p> */}
+            <div className="errorMsg">{this.state.errors.employeename}</div>
 
             <label>EmployeeSalary:</label>
             <input
               type="number"
-              name="employee_salary"
+              name="employeesalary"
               style={{ marginTop: '10px' }}
               autoComplete="off"
               defaultValue={
                 this.props.data
-                  ? this.props.data.employee_salary
-                  : this.state.fields.employee_salary
+                  ? this.props.data.employeesalary
+                  : this.state.fields.employeesalary
               }
               onChange={this.handleChange}
             />
-            <div className="errorMsg">{this.state.errors.employee_salary}</div>
+            <div className="errorMsg">{this.state.errors.employeesalary}</div>
 
             <label>EmployeeAge:</label>
             <input
               type="number"
-              name="employee_age"
+              name="employeeage"
               style={{ marginTop: '10px' }}
               autoComplete="off"
               defaultValue={
                 this.props.data
-                  ? this.props.data.employee_age
-                  : this.state.fields.employee_age
+                  ? this.props.data.employeeage
+                  : this.state.fields.employeeage
               }
               onChange={this.handleChange}
             />
-            <div className="errorMsg">{this.state.errors.employee_age}</div>
+            <div className="errorMsg">{this.state.errors.employeeage}</div>
 
             <label>Email ID:</label>
             <input
@@ -234,7 +235,6 @@ class RegisterForm extends React.Component {
               type="text"
               name="designation"
               style={{ marginTop: '10px' }}
-              pattern="[a-zA-Z]+"
               minLength="2"
               maxLength="24"
               autoComplete="off"
