@@ -1,49 +1,48 @@
-import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+// import { Button, Modal, ModalBody } from 'reactstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
 import RegisterForm from './components/RegisterForm.js';
 
-class Addmodel extends Component {
-  state = {
-    isOpen: false,
-  };
+function Addmodel(args) {
+  const [modal, setModal] = useState(false);
 
-  openModal = () => this.setState({ isOpen: true });
-  closeModal = () => this.setState({ isOpen: false });
+  const toggle = () => setModal(!modal);
 
-  saveEmpDetail(e) {
-    this.props.passemployee(e);
-    this.closeModal(e);
+  function saveEmpDetail(e) {
+    args.passemployee(e);
+    toggle();
   }
 
-  cancelForm(e) {
-    this.closeModal(e);
+  function cancelForm(e) {
+    toggle(e);
   }
-
-  render() {
-    return (
-      <>
-        <div>
-          <h1 style={{ marginTop: '10px', textAlign: 'center' }}>
-            {' '}
-            Employee List
-          </h1>
-          <Button
-            color="primary"
+  return (
+    <div>
+      <h1 style={{ marginTop: '10px', textAlign: 'center' }}> Employee List</h1>
+      <Button color="primary" style={{ float: 'right' }} onClick={toggle}>
+        Add Employee{' '}
+      </Button>
+      <Modal isOpen={modal} toggle={toggle} {...args}>
+        <ModalBody>
+          <button
+            type="button"
             style={{ float: 'right' }}
-            onClick={this.openModal}
+            class="close"
+            color="secondary"
+            onClick={toggle}
           >
-            Add Employee
-          </Button>
+            {' '}
+            X
+          </button>
 
-          <Modal show={this.state.isOpen} onHide={this.closeModal}>
-            <RegisterForm
-              saveEmpDetail={(e) => this.saveEmpDetail(e)}
-              cancelForm={(e) => this.cancelForm(e)}
-            />
-          </Modal>
-        </div>
-      </>
-    );
-  }
+          <RegisterForm
+            saveEmpDetail={(e) => saveEmpDetail(e)}
+            cancelForm={(e) => cancelForm(e)}
+          />
+        </ModalBody>
+      </Modal>
+    </div>
+  );
 }
+
 export default Addmodel;
