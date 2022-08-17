@@ -1,4 +1,4 @@
-// import { Button, Modal, ModalBody } from 'reactstrap';
+import { Button, Modal, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import RegisterForm from './components/RegisterForm.js';
