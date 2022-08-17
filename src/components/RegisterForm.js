@@ -4,9 +4,11 @@ import './RegisterForm.css';
 class RegisterForm extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       fields: props.data || {},
       errors: {},
+      total: props.total,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -157,10 +159,13 @@ class RegisterForm extends React.Component {
               type="text"
               pattern="[0-9]+"
               name="id"
+              disabled={true}
               autoComplete="off"
               style={{ marginTop: '10px' }}
               defaultValue={
-                this.props.data ? this.props.data.id : this.state.fields.id
+                this.props.data
+                  ? this.props.data.id
+                  : `ABC${this.props.totalUsers + 1}`
               }
               onChange={this.handleChange}
             />

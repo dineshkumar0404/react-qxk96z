@@ -83,7 +83,10 @@ class App extends Component {
 
     return (
       <div>
-        <Addmodel passemployee={(e) => this.passemployee(e)} />
+        <Addmodel
+          passemployee={(e) => this.passemployee(e)}
+          totalUsers={this.state.users.length}
+        />
 
         <table className="table table-striped ">
           <thead style={{ textAlign: 'center' }}>

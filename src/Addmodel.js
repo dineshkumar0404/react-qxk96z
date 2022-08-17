@@ -36,6 +36,7 @@ function Addmodel(args) {
           </button>
 
           <RegisterForm
+            totalUsers={args.totalUsers}
             saveEmpDetail={(e) => saveEmpDetail(e)}
             cancelForm={(e) => cancelForm(e)}
           />
