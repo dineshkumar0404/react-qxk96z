@@ -13,6 +13,7 @@ class App extends Component {
       selecteduser: null,
       detailuser: false,
       showModel: false,
+      totalUsers: null,
     };
   }
   passemployee(e) {
@@ -117,224 +118,183 @@ class App extends Component {
         </Modal>
 
         <Modal isOpen={this.state.detailuser}>
-          {/* <div style={{ backgroundColor: 'white', width: '900px' }}>
-            <ModalBody>
-              <table className="table table-striped "style={{ textAlign: 'center', width: '100px' }}>
-                <thead>
-                  <tr>
-                    <th>EmployeeId</th>
-                    <th>EmployeeName</th>
-                    <th>EmployeeSalary</th>
-                    <th>EmployeeAge</th>
-                    <th>Email ID</th>
-                    <th>Designation</th>
-                    <th>ProfileImage</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      {this.state.selecteduser ? this.state.selecteduser.id : ''}
-                    </td>
-                    <td>
-                      {this.state.selecteduser ? this.state.selecteduser.employeename : ''}
-                    </td>
-                    <td>
-                      {this.state.selecteduser ? this.state.selecteduser.employeesalary : ''}
-                    </td>
-                    <td>
-                      {this.state.selecteduser ? this.state.selecteduser.employeeage : ''}
-                    </td>
-                    <td>
-                      {this.state.selecteduser ? this.state.selecteduser.email : ''}
-                    </td>
-                    <td>
-                      {this.state.selecteduser ? this.state.selecteduser.designation : ''}
-                    </td>
-                    <td>
-                      <img  src={this.state.selecteduser ? this.state.selecteduser.file : ''} alt="logo"style={{ height: '50px' }}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div> 
-                <button
-                  type="button" className="btn btn-danger" onClick={() => this.setState({ detailuser: !this.state.detailuser })}>
-                  Close
-                </button>
-              </div>
-            </ModalBody>
-            </div>*/}
-
           <h3 style={{ marginTop: '25px' }}>Employee Details</h3>
-
           <ModalBody>
             <div className="container">
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '150px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4"></div>
+              <div className="text-center">
                 <div
-                  className="col-md-4"
+                  className="row mt-1"
                   style={{
-                    border: 'solid 2px',
-                    borderRadius: '100px',
-                    width: '150px',
+                    padding: '0px 0px 0px 0px',
+                    height: '150px',
+                    marginTop: '35px',
                   }}
                 >
-                  <img
-                    src={
-                      this.state.selecteduser
-                        ? this.state.selecteduser.file
-                        : ''
-                    }
-                    alt="logo"
-                    style={{ height: '120px' }}
-                  ></img>
-                </div>
-                <div className="col-md-4"></div>
-              </div>
-
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '50px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4">
-                  <label>EmployeeID</label>
-                </div>
-                <div className="col-md-2">
-                  <label>-</label>
-                </div>
-                <div className="col-md-6">
-                  {this.state.selecteduser ? this.state.selecteduser.id : ''}
-                </div>
-              </div>
-
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '50px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4">
-                  <label>EmployeeName</label>
-                </div>
-                <div className="col-md-2">
-                  <label>-</label>
-                </div>
-                <div className="col-md-6">
-                  {this.state.selecteduser
-                    ? this.state.selecteduser.employeename
-                    : ''}
-                </div>
-              </div>
-
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '50px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4">
-                  <label>EmployeeSalary</label>
-                </div>
-                <div className="col-md-2">
-                  <label>-</label>
-                </div>
-                <div className="col-md-6">
-                  {this.state.selecteduser
-                    ? this.state.selecteduser.employeesalary
-                    : ''}
-                </div>
-              </div>
-
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '50px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4">
-                  <label>EmployeeAge</label>
-                </div>
-                <div className="col-md-2">
-                  <label>-</label>
-                </div>
-                <div className="col-md-6">
-                  {this.state.selecteduser
-                    ? this.state.selecteduser.employeeage
-                    : ''}
-                </div>
-              </div>
-
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '50px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4">
-                  <label>Email</label>
-                </div>
-                <div className="col-md-2">
-                  <label>-</label>
-                </div>
-                <div className="col-md-6">
-                  {this.state.selecteduser ? this.state.selecteduser.email : ''}
-                </div>
-              </div>
-
-              <div
-                className="row mt-1"
-                style={{
-                  padding: '0px 0px 0px 0px',
-                  height: '50px',
-                  marginTop: '35px',
-                }}
-              >
-                <div className="col-md-4">
-                  <label>Designation</label>
-                </div>
-                <div className="col-md-2">
-                  <label>-</label>
-                </div>
-                <div className="col-md-6">
-                  {this.state.selecteduser
-                    ? this.state.selecteduser.designation
-                    : ''}
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col text-center">
-                  <button
-                    type="button"
-                    className="btn btn-danger text-center"
-                    onClick={() =>
-                      this.setState({ detailuser: !this.state.detailuser })
-                    }
+                  <div className="col-md-4"></div>
+                  <div
+                    className="col-md-4"
+                    style={{
+                      border: 'solid 2px',
+                      borderRadius: '100px',
+                      width: '150px',
+                    }}
                   >
-                    Close
-                  </button>
+                    <img
+                      src={
+                        this.state.selecteduser
+                          ? this.state.selecteduser.file
+                          : ''
+                      }
+                      alt="logo"
+                      style={{ height: '120px', zIndex: '1' }}
+                    ></img>
+                  </div>
+                  <div className="col-md-4"></div>
+                </div>
+
+                <div
+                  className="row mt-1"
+                  style={{
+                    padding: '0px 0px 0px 0px',
+                    height: '50px',
+                    marginTop: '35px',
+                  }}
+                >
+                  <div className="col-md-4">
+                    <label>EmployeeID</label>
+                  </div>
+                  <div className="col-md-2">
+                    <label>-</label>
+                  </div>
+                  <div className="col-md-6">
+                    {this.state.selecteduser ? this.state.selecteduser.id : ''}
+                  </div>
+                </div>
+
+                <div
+                  className="row mt-1"
+                  style={{
+                    padding: '0px 0px 0px 0px',
+                    height: '50px',
+                    marginTop: '35px',
+                  }}
+                >
+                  <div className="col-md-4">
+                    <label>EmployeeName</label>
+                  </div>
+                  <div className="col-md-2">
+                    <label>-</label>
+                  </div>
+                  <div className="col-md-6">
+                    {this.state.selecteduser
+                      ? this.state.selecteduser.employeename
+                      : ''}
+                  </div>
+                </div>
+
+                <div
+                  className="row mt-1"
+                  style={{
+                    padding: '0px 0px 0px 0px',
+                    height: '50px',
+                    marginTop: '35px',
+                  }}
+                >
+                  <div className="col-md-4">
+                    <label>EmployeeSalary</label>
+                  </div>
+                  <div className="col-md-2">
+                    <label>-</label>
+                  </div>
+                  <div className="col-md-6">
+                    {this.state.selecteduser
+                      ? this.state.selecteduser.employeesalary
+                      : ''}
+                  </div>
+                </div>
+
+                <div
+                  className="row mt-1"
+                  style={{
+                    padding: '0px 0px 0px 0px',
+                    height: '50px',
+                    marginTop: '35px',
+                  }}
+                >
+                  <div className="col-md-4">
+                    <label>EmployeeAge</label>
+                  </div>
+                  <div className="col-md-2">
+                    <label>-</label>
+                  </div>
+                  <div className="col-md-6">
+                    {this.state.selecteduser
+                      ? this.state.selecteduser.employeeage
+                      : ''}
+                  </div>
+                </div>
+
+                <div
+                  className="row mt-1"
+                  style={{
+                    padding: '0px 0px 0px 0px',
+                    height: '50px',
+                    marginTop: '35px',
+                  }}
+                >
+                  <div className="col-md-4">
+                    <label>Email</label>
+                  </div>
+                  <div className="col-md-2">
+                    <label>-</label>
+                  </div>
+                  <div className="col-md-6">
+                    {this.state.selecteduser
+                      ? this.state.selecteduser.email
+                      : ''}
+                  </div>
+                </div>
+
+                <div
+                  className="row mt-1"
+                  style={{
+                    padding: '0px 0px 0px 0px',
+                    height: '50px',
+                    marginTop: '35px',
+                  }}
+                >
+                  <div className="col-md-4">
+                    <label>Designation</label>
+                  </div>
+                  <div className="col-md-2">
+                    <label>-</label>
+                  </div>
+                  <div className="col-md-6">
+                    {this.state.selecteduser
+                      ? this.state.selecteduser.designation
+                      : ''}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col text-center">
+                    <button
+                      type="button"
+                      className="btn btn-danger text-center m-1"
+                      onClick={() =>
+                        this.setState({ detailuser: !this.state.detailuser })
+                      }
+                    >
+                      CLOSE
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary text-center m-1"
+                      onClick={() => this.updateForm(this.data)}
+                    >
+                      EDIT
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
