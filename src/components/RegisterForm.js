@@ -1,12 +1,13 @@
 import React from 'react';
 import './RegisterForm.css';
+import axios from 'axios';
 
 class RegisterForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      fields: props.data || {},
+      fields: this.props.data ? this.props.data : {},
       errors: {},
     };
 
@@ -17,22 +18,38 @@ class RegisterForm extends React.Component {
 
   handleChange(e) {
     let fields = this.state.fields;
-
     fields[e.target.name] = e.target.value;
+
+    if (!this.props.data) {
+      fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+    }
     this.setState({ fields });
   }
 
   submituserRegistrationForm(e) {
     e.preventDefault();
     if (this.validateForm()) {
-      // let fields = {};
-      // this.setState({ fields: fields });
-
       if (this.props.data) {
-        this.props.updateForm(this.state.fields);
-        this.fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+        axios
+          .put(`/data/${this.state.fields.id}`, this.state.fields)
+          .then((response) => {
+            console.log('Update');
+
+            this.props.updateForm(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
-        this.props.saveEmpDetail(this.state.fields);
+        axios
+          .post('/data', this.state.fields)
+          .then((response) => {
+            console.log('Add');
+            this.props.saveEmpDetail(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     }
   }
@@ -95,7 +112,7 @@ class RegisterForm extends React.Component {
         errors['employeeage'] = '*Please enter EmployeeAge .';
       } else if (!pattern.test(fields['employeeage'])) {
         formIsValid = false;
-        errors['employeeage'] = '*Please enter EmployeeAge between 18 to 60.';
+        errors['employeeage'] = '*Please enter Age between 18 to 60.';
       }
     }
 
@@ -142,188 +159,330 @@ class RegisterForm extends React.Component {
   }
 
   cancelForm(e) {
-    this.props.cancelForm();
+    this.props.cancelForm(e);
   }
 
   render() {
     return (
       <div className="container">
-        <h3 style={{ textAlign: 'center' }}>Registration page</h3>
-
+        {!this.props.data && (
+          <h3 style={{ textAlign: 'center' }}>Registration page</h3>
+        )}
+        {this.props.data && (
+          <h3 style={{ textAlign: 'center' }}>Update page</h3>
+        )}
         <form
           method="post"
           name="userRegistrationForm"
           onSubmit={(e) => this.submituserRegistrationForm(e)}
         >
-          <div className="row mt-1">
-            <div className="col-md-6">
-              <label>EmployeeID</label>
-              <input
-                type="text"
-                name="id"
-                autoComplete="off"
-                disabled={this.props.data ? true : false}
-                style={{ marginTop: '10px' }}
-                defaultValue={
-                  this.props.data
-                    ? this.props.data.id
-                    : `SPC000${this.props.totalUsers + 1}`
-                }
-                onChange={this.handleChange}
-              />
-
-              <div className="errorMsg">{this.state.errors.id}</div>
-            </div>
-            {/* <div className="col-md-6"  >
-            </div> */}
-
+          <div className="container-1" id="form">
             <div
-              className="col-md-6"
-              style={{ padding: '0px', border: '1px rgb(15, 15, 15) solid' }}
+              className="row mt-5"
+              style={{ height: '50px', padding: '5px', marginTop: '35px' }}
             >
+              <div className="col-md-2">
+                <label>EmployeeID</label>
+              </div>
+              <div className="col-md-1">
+                <label>-</label>
+              </div>
+              <div className="col-md-4">
+                {!this.props.data && (
+                  <input
+                    type="text"
+                    name="id"
+                    autoComplete="off"
+                    disabled={true}
+                    defaultValue={`SPC000${this.props.totalUsers + 1}`}
+                    onChange={this.handleChange}
+                  />
+                )}
+                {this.props.data && (
+                  <input
+                    type="text"
+                    name="id"
+                    autoComplete="off"
+                    disabled={true}
+                    defaultValue={this.props.data.id}
+                    onChange={this.handleChange}
+                  />
+                )}
+
+                <div className="errorMsg">{this.state.errors.id}</div>
+              </div>
+
               <div
-                className="short-div"
-                style={{
-                  backgroundColor: 'white',
-                  position: 'relative',
-                  height: '500px',
-                  zIndex: '1',
-                }}
+                className="col-md-4"
+                style={{ padding: '0px ', border: '1px rgb(15, 15, 15) solid' }}
               >
-                <img
-                  src=""
-                  className="card-img-top"
-                  alt="logo"
-                  style={{ height: '200px' }}
-                />
+                <div
+                  className="short-div"
+                  style={{ position: 'relative', zIndex: '1' }}
+                >
+                  {this.props.data && (
+                    <img
+                      src={this.state.fields.file}
+                      alt=""
+                      style={{
+                        height: '300px',
+                        width: '360px',
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        backgroundImage: `url(${this.props.data.file})`,
+                      }}
+                    />
+                  )}
+                  {!this.props.data && (
+                    <img
+                      src={this.state.fields.file}
+                      alt=""
+                      style={{ height: '300px', width: '370px' }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="row mt-1">
-            <div className="col-md-6">
-              <label>EmployeeName:</label>
-              <input
-                type="text"
-                name="employeename"
-                minLength="4"
-                maxLength="24"
-                autoComplete="off"
-                style={{ marginTop: '10px' }}
-                defaultValue={
-                  this.props.data
-                    ? this.props.data.employeename
-                    : this.state.fields.employeename
-                }
-                onChange={this.handleChange}
-              />
-              {/* <small>Note:Please enter the alphabet only</small> */}
+          <div
+            className="row"
+            style={{
+              padding: '0px 0px 0px 0px',
+              height: '50px',
+              marginTop: '35px',
+            }}
+          >
+            <div className="col-md-2">
+              <label>EmployeeName</label>
+            </div>
+            <div className="col-md-1">
+              <label>-</label>
+            </div>
+            <div className="col-md-4">
+              {!this.props.data && (
+                <input
+                  type="text"
+                  name="employeename"
+                  minLength="4"
+                  maxLength="24"
+                  autoComplete="off"
+                  defaultValue={this.state.fields.employeename}
+                  onChange={this.handleChange}
+                />
+              )}
+
+              {this.props.data && (
+                <input
+                  type="text"
+                  name="employeename"
+                  autoComplete="off"
+                  defaultValue={this.props.data.employeename}
+                  onChange={this.handleChange}
+                />
+              )}
+
               <div className="errorMsg">{this.state.errors.employeename}</div>
             </div>
-            <div className="col-md-6"></div>
+
+            <div className="col-md-4"></div>
           </div>
 
-          <div className="row mt-1">
-            <div className="col-md-6">
-              <label>EmployeeSalary:</label>
-              <input
-                type="number"
-                name="employeesalary"
-                style={{ marginTop: '10px' }}
-                autoComplete="off"
-                defaultValue={
-                  this.props.data
-                    ? this.props.data.employeesalary
-                    : this.state.fields.employeesalary
-                }
-                onChange={this.handleChange}
-              />
+          <div
+            className="row"
+            style={{
+              padding: '0px 0px 0px 0px',
+              height: '50px',
+              marginTop: '35px',
+            }}
+          >
+            <div className="col-md-2">
+              <label>EmployeeSalary</label>
+            </div>
+            <div className="col-md-1">
+              <label>-</label>
+            </div>
+            <div className="col-md-4">
+              {!this.props.data && (
+                <input
+                  type="number"
+                  name="employeesalary"
+                  style={{ marginTop: '10px' }}
+                  autoComplete="off"
+                  defaultValue={this.state.fields.employeesalary}
+                  onChange={this.handleChange}
+                />
+              )}
+              {this.props.data && (
+                <input
+                  type="number"
+                  name="employeesalary"
+                  style={{ marginTop: '10px' }}
+                  autoComplete="off"
+                  defaultValue={this.props.data.employeesalary}
+                  onChange={this.handleChange}
+                />
+              )}
               <div className="errorMsg">{this.state.errors.employeesalary}</div>
             </div>
-            <div className="col-md-6"></div>
+
+            <div className="col-md-4"></div>
           </div>
 
-          <div className="row mt-1">
-            <div className="col-md-6">
-              <label>EmployeeAge:</label>
-              <input
-                type="number"
-                name="employeeage"
-                style={{ marginTop: '10px' }}
-                autoComplete="off"
-                defaultValue={
-                  this.props.data
-                    ? this.props.data.employeeage
-                    : this.state.fields.employeeage
-                }
-                onChange={this.handleChange}
-              />
+          <div
+            className="row"
+            style={{
+              padding: '0px 0px 0px 0px',
+              height: '50px',
+              marginTop: '35px',
+            }}
+          >
+            <div className="col-md-2">
+              <label>EmployeeAge</label>
+            </div>
+            <div className="col-md-1">
+              <label>-</label>
+            </div>
+            <div className="col-md-4">
+              {!this.props.data && (
+                <input
+                  type="number"
+                  name="employeeage"
+                  autoComplete="off"
+                  defaultValue={this.state.fields.employeeage}
+                  onChange={this.handleChange}
+                />
+              )}
+              {this.props.data && (
+                <input
+                  type="number"
+                  name="employeeage"
+                  autoComplete="off"
+                  defaultValue={this.props.data.employeeage}
+                  onChange={this.handleChange}
+                />
+              )}
+
               <div className="errorMsg">{this.state.errors.employeeage}</div>
             </div>
-            <div className="col-md-6"></div>
+
+            <div className="col-md-4"></div>
           </div>
 
-          <div className="row mt-1">
-            <div className="col-md-6">
-              <label>Email ID:</label>
-              <input
-                type="text"
-                name="email"
-                style={{ marginTop: '10px' }}
-                autoComplete="off"
-                defaultValue={
-                  this.props.data
-                    ? this.props.data.email
-                    : this.state.fields.email
-                }
-                onChange={this.handleChange}
-              />
+          <div
+            className="row"
+            style={{
+              padding: '0px 0px 0px 0px',
+              height: '50px',
+              marginTop: '35px',
+            }}
+          >
+            <div className="col-md-2">
+              <label>Email ID</label>
+            </div>
+            <div className="col-md-1">
+              <label>-</label>
+            </div>
+            <div className="col-md-4">
+              {!this.props.data && (
+                <input
+                  type="text"
+                  name="email"
+                  autoComplete="off"
+                  defaultValue={this.state.fields.email}
+                  onChange={this.handleChange}
+                />
+              )}
+
+              {this.props.data && (
+                <input
+                  type="text"
+                  name="email"
+                  autoComplete="off"
+                  defaultValue={this.props.data.email}
+                  onChange={this.handleChange}
+                />
+              )}
               <div className="errorMsg">{this.state.errors.email}</div>
             </div>
-            <div className="col-md-6"></div>
-          </div>
 
-          <div className="row mt-1">
-            <div className="col-md-6">
-              <label>Designation:</label>
-              <input
-                type="text"
-                name="designation"
-                style={{ marginTop: '10px' }}
-                minLength="2"
-                maxLength="24"
-                autoComplete="off"
-                defaultValue={
-                  this.props.data
-                    ? this.props.data.designation
-                    : this.state.fields.designation
-                }
-                onChange={this.handleChange}
-              />
-              <div className="errorMsg">{this.state.errors.designation}</div>
+            <div className="col-md-1 mt-1">
+              <label style={{ marginLeft: '10px', marginTop: '12px' }}>
+                ProfileImage
+              </label>
             </div>
+            <div className="col-md-3 mt-1">
+              {!this.props.data && (
+                <input
+                  type="file"
+                  name="file"
+                  defaultValue={this.state.fields.file}
+                  onChange={(e) => this.handleFileRead(e)}
+                />
+              )}
+              {this.props.data && (
+                <input
+                  type="file"
+                  name="file"
+                  defaultValue={''}
+                  onChange={(e) => this.handleFileRead(e)}
+                />
+              )}
 
-            <div className="col-md-6">
-              <label>ProfileImage:</label>
-              {/* <img src={this.props.data.file} alt="logo" style={{width:"50px",heigth:"50px"}}></img> */}
-              <input
-                type="file"
-                name="file"
-                style={{ marginTop: '10px' }}
-                defaultValue={this.props.data ? '' : this.state.fields.file}
-                onChange={(e) => this.handleFileRead(e)}
-              />
               <div className="errorMsg">{this.state.errors.file}</div>
             </div>
           </div>
 
-          <div className="row mb-3 mt-3">
+          <div
+            className="row"
+            style={{
+              padding: '0px 0px 0px 0px',
+              height: '50px',
+              marginTop: '35px',
+            }}
+          >
+            <div className="col-md-2">
+              <label>Designation</label>
+            </div>
+            <div className="col-md-1">
+              <label>-</label>
+            </div>
+            <div className="col-md-4">
+              {!this.props.data && (
+                <input
+                  type="text"
+                  name="designation"
+                  minLength="2"
+                  maxLength="24"
+                  autoComplete="off"
+                  defaultValue={this.state.fields.designation}
+                  onChange={this.handleChange}
+                />
+              )}
+              {this.props.data && (
+                <input
+                  type="text"
+                  name="designation"
+                  minLength="2"
+                  maxLength="24"
+                  autoComplete="off"
+                  defaultValue={this.props.data.designation}
+                  onChange={this.handleChange}
+                />
+              )}
+              <div className="errorMsg">{this.state.errors.designation}</div>
+            </div>
+            <div className="col-md-4"></div>
+          </div>
+
+          <div className="row mb-3 mt-4">
             <div className="col-md-3"></div>
             <div className="col-md-3">
               <input
                 type="submit"
                 className="button"
-                value={this.props.data ? 'Update' : 'Submit'}
+                value={this.props.data ? 'UPDATE' : 'SUBMIT'}
               />
             </div>
 
@@ -331,7 +490,7 @@ class RegisterForm extends React.Component {
               <input
                 type="button"
                 className="button"
-                value="Close"
+                value="CLOSE"
                 onClick={(e) => this.cancelForm(e)}
               />
             </div>

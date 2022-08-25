@@ -1,47 +1,91 @@
 import React, { Component } from 'react';
-import data from './pages/data.json';
+import axios from 'axios';
 import Addmodel from './Addmodel.js';
 import { Modal, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterForm from './components/RegisterForm.js';
+import { fetchEmployee } from './utils/api/employee.js';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: data,
+      users: [],
       selecteduser: null,
       detailuser: false,
       showModel: false,
       totalUsers: null,
+      indexid: null,
     };
   }
+
   passemployee(e) {
-    this.state.users.push(e);
+    this.state.users.push(e.data);
     this.setState({ users: this.state.users });
+    console.log(e.data);
   }
 
   updateForm(e) {
     this.setState({ showModel: !this.state.showModel });
-    this.state.users.splice(e.index, e);
+
+    this.state.users.splice(this.state.indexid, 1, e.data);
+
+    console.log(e.data);
   }
 
   DeleteRow = (index, name) => {
-    this.state.users.splice(index, 1);
-    this.setState({ users: this.state.users });
+    if (window.confirm('Do you want to delete EmployeeName : ' + name)) {
+      axios
+        .delete('/data/SPC0001')
+        .then((response) => {
+          console.log(response);
+          console.log('Delete');
+          this.state.users.splice(index, 1);
+          this.setState({ users: this.state.users });
+        })
 
-    alert('Do you want to delete EmployeeName : ' + name);
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
-  Details = (users) => {
+  Details = (index, users) => {
     this.setState({ detailuser: true });
+    this.setState({ selecteduser: users, indexid: index });
+  };
+
+  Update = (index, users) => {
+    this.setState({ indexid: index, showModel: true });
     this.setState({ selecteduser: users });
   };
 
-  Update = (users) => {
-    this.setState({ showModel: true });
-    this.setState({ selecteduser: users });
+  fetchEmployeeData = async () => {
+    try {
+      const empdata = await fetchEmployee();
+
+      console.log(empdata);
+
+      this.setState({ users: empdata });
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  componentDidMount() {
+    this.fetchEmployeeData();
+
+    //   axios.get('/data')
+    //     .then(response => {
+    //       console.log("fetch");
+    //       this.setState({ users: response.data })
+    //       //  console.log(response.data);
+
+    //     })
+    //     .catch(error => {
+    //       console.log(error)
+    //     })
+  }
 
   render() {
     let DisplayData = this.state.users.map((users, index) => {
@@ -66,14 +110,14 @@ class App extends Component {
             </button>
             <button
               className="btn btn-info m-1"
-              onClick={() => this.Update(users, index)}
+              onClick={() => this.Update(index, users)}
             >
               Update
             </button>
 
             <button
               className="btn btn-info m-1"
-              onClick={() => this.Details(users)}
+              onClick={() => this.Details(index, users)}
             >
               Details
             </button>
@@ -105,7 +149,7 @@ class App extends Component {
           <tbody>{DisplayData}</tbody>
         </table>
 
-        <Modal isOpen={this.state.showModel}>
+        <Modal size="xl" isOpen={this.state.showModel}>
           <ModalBody>
             <RegisterForm
               data={this.state.selecteduser}
@@ -137,6 +181,7 @@ class App extends Component {
                       border: 'solid 2px',
                       borderRadius: '100px',
                       width: '150px',
+                      overflow: 'hidden',
                     }}
                   >
                     <img
@@ -276,8 +321,8 @@ class App extends Component {
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="col text-center">
+                <div className="row">
+                  <div className="col text-center">
                     <button
                       type="button"
                       className="btn btn-danger text-center m-1"
@@ -290,7 +335,10 @@ class App extends Component {
                     <button
                       type="button"
                       className="btn btn-primary text-center m-1"
-                      onClick={() => this.updateForm(this.data)}
+                      onClick={() => {
+                        this.setState({ detailuser: !this.state.detailuser });
+                        this.updateForm(this.props.selecteduser);
+                      }}
                     >
                       EDIT
                     </button>
