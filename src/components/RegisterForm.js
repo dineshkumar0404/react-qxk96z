@@ -1,6 +1,6 @@
 import React from 'react';
 import './RegisterForm.css';
-import axios from 'axios';
+import { addEmployee, updateEmployee } from '../utils/api/employee';
 
 class RegisterForm extends React.Component {
   constructor(props) {
@@ -30,26 +30,11 @@ class RegisterForm extends React.Component {
     e.preventDefault();
     if (this.validateForm()) {
       if (this.props.data) {
-        axios
-          .put(`/data/${this.state.fields.id}`, this.state.fields)
-          .then((response) => {
-            console.log('Update');
-
-            this.props.updateForm(response);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        updateEmployee();
+        this.props.updateForm(this.state.fields);
       } else {
-        axios
-          .post('/data', this.state.fields)
-          .then((response) => {
-            console.log('Add');
-            this.props.saveEmpDetail(response);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        addEmployee();
+        this.props.saveEmpDetail(this.state.fields);
       }
     }
   }

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+
 import Addmodel from './Addmodel.js';
 import { Modal, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterForm from './components/RegisterForm.js';
-import { fetchEmployee } from './utils/api/employee.js';
+import { fetchEmployee } from './utils/api/employee';
+import { deleteEmployee } from './utils/api/employee';
 
 class App extends Component {
   constructor(props) {
@@ -20,33 +21,23 @@ class App extends Component {
   }
 
   passemployee(e) {
-    this.state.users.push(e.data);
+    this.state.users.push(e);
     this.setState({ users: this.state.users });
-    console.log(e.data);
+    console.log(e);
   }
 
   updateForm(e) {
     this.setState({ showModel: !this.state.showModel });
-
-    this.state.users.splice(this.state.indexid, 1, e.data);
-
-    console.log(e.data);
+    this.state.users.splice(this.state.indexid, 1, e);
+    console.log(e);
   }
 
   DeleteRow = (index, name) => {
     if (window.confirm('Do you want to delete EmployeeName : ' + name)) {
-      axios
-        .delete('/data/SPC0001')
-        .then((response) => {
-          console.log(response);
-          console.log('Delete');
-          this.state.users.splice(index, 1);
-          this.setState({ users: this.state.users });
-        })
-
-        .catch((error) => {
-          console.log(error);
-        });
+      deleteEmployee();
+      console.log('Delete');
+      this.state.users.splice(index, 1);
+      this.setState({ users: this.state.users });
     }
   };
 
@@ -60,32 +51,11 @@ class App extends Component {
     this.setState({ selecteduser: users });
   };
 
-  fetchEmployeeData = async () => {
-    try {
-      const empdata = await fetchEmployee();
-
-      console.log(empdata);
-
-      this.setState({ users: empdata });
-    } catch (err) {
-      console.error(err);
-    }
+  componentDidMount = async () => {
+    const empdata = await fetchEmployee();
+    console.log('fetch');
+    this.setState({ users: empdata });
   };
-
-  componentDidMount() {
-    this.fetchEmployeeData();
-
-    //   axios.get('/data')
-    //     .then(response => {
-    //       console.log("fetch");
-    //       this.setState({ users: response.data })
-    //       //  console.log(response.data);
-
-    //     })
-    //     .catch(error => {
-    //       console.log(error)
-    //     })
-  }
 
   render() {
     let DisplayData = this.state.users.map((users, index) => {
@@ -337,7 +307,11 @@ class App extends Component {
                       className="btn btn-primary text-center m-1"
                       onClick={() => {
                         this.setState({ detailuser: !this.state.detailuser });
-                        this.updateForm(this.props.selecteduser);
+                        this.updateForm(
+                          this.state.indexid,
+                          1,
+                          this.state.users
+                        );
                       }}
                     >
                       EDIT
