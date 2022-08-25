@@ -1,6 +1,5 @@
 import React from 'react';
 import './RegisterForm.css';
-import { addEmployee, updateEmployee } from '../utils/api/employee';
 
 class RegisterForm extends React.Component {
   constructor(props) {
@@ -30,10 +29,8 @@ class RegisterForm extends React.Component {
     e.preventDefault();
     if (this.validateForm()) {
       if (this.props.data) {
-        updateEmployee();
         this.props.updateForm(this.state.fields);
       } else {
-        addEmployee();
         this.props.saveEmpDetail(this.state.fields);
       }
     }

@@ -4,8 +4,12 @@ import Addmodel from './Addmodel.js';
 import { Modal, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterForm from './components/RegisterForm.js';
-import { fetchEmployee } from './utils/api/employee';
-import { deleteEmployee } from './utils/api/employee';
+import {
+  deleteEmployee,
+  addEmployee,
+  fetchEmployee,
+  updateEmployee,
+} from './utils/api/employee';
 
 class App extends Component {
   constructor(props) {
@@ -20,24 +24,28 @@ class App extends Component {
     };
   }
 
-  passemployee(e) {
+  passemployee = async (e) => {
+    await addEmployee();
     this.state.users.push(e);
     this.setState({ users: this.state.users });
+    console.log('add');
     console.log(e);
-  }
+  };
 
-  updateForm(e) {
+  updateForm = async (e) => {
+    await updateEmployee();
     this.setState({ showModel: !this.state.showModel });
     this.state.users.splice(this.state.indexid, 1, e);
+    console.log('Updated');
     console.log(e);
-  }
+  };
 
-  DeleteRow = (index, name) => {
+  DeleteRow = async (index, name) => {
     if (window.confirm('Do you want to delete EmployeeName : ' + name)) {
-      deleteEmployee();
-      console.log('Delete');
+      await deleteEmployee();
       this.state.users.splice(index, 1);
       this.setState({ users: this.state.users });
+      console.log('Delete');
     }
   };
 
