@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import Addmodel from './Addmodel.js';
 import { Modal, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,24 +24,27 @@ class App extends Component {
   }
 
   passemployee = async (e) => {
-    await addEmployee();
-    this.state.users.push(e);
+    const empass = await addEmployee(e);
+    //  console.log(empass)
+    this.state.users.push(empass);
     this.setState({ users: this.state.users });
     console.log('add');
-    console.log(e);
   };
 
   updateForm = async (e) => {
-    await updateEmployee();
+    const empupd = await updateEmployee(e);
+
+    //  console.log(empupd)
     this.setState({ showModel: !this.state.showModel });
-    this.state.users.splice(this.state.indexid, 1, e);
+    this.state.users.splice(this.state.indexid, 1, empupd);
     console.log('Updated');
-    console.log(e);
   };
 
   DeleteRow = async (index, name) => {
     if (window.confirm('Do you want to delete EmployeeName : ' + name)) {
-      await deleteEmployee();
+      const empdel = this.state.users[index];
+      // console.log(empdel)
+      await deleteEmployee(empdel.id);
       this.state.users.splice(index, 1);
       this.setState({ users: this.state.users });
       console.log('Delete');

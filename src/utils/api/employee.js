@@ -1,24 +1,24 @@
-import axios from 'axios';
+import axios from './axios';
 
-axios.defaults.baseURL =
-  'https://my-json-server.typicode.com/dineshkumar0404/demo';
-
-export const fetchEmployee = async () => {
-  const edata = await axios.get('/data');
+export const fetchEmployee = () => {
+  const edata = axios.get('/data');
   return edata;
 };
 
-export const deleteEmployee = async () => {
-  const edelete = await axios.delete(`/data/SPC000${1}`);
+export const deleteEmployee = (id) => {
+  // console.log(id)
+  const edelete = axios.delete(`/data/${id}`);
   return edelete;
 };
 
-export const updateEmployee = async () => {
-  const eupdate = await axios.put(`/data/SPC000${1}`);
+export const updateEmployee = (e) => {
+  // console.log(e)
+  const eupdate = axios.put(`/data/${e.id}`, e);
   return eupdate;
 };
 
-export const addEmployee = async () => {
-  const eadd = await axios.post('/data');
+export const addEmployee = (e) => {
+  const eadd = axios.post('/data', e);
+  // console.log(e)
   return eadd;
 };
