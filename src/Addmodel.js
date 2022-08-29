@@ -1,99 +1,53 @@
-import { Button, Modal, ModalBody } from 'reactstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
-import RegisterForm from './components/RegisterForm.js';
+import React, { Component } from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import RegisterForm1 from './components/RegisterForm1';
 
-function Addmodel(args) {
-  const [modal, setModal] = useState(false);
+class Addmodel extends Component {
+  constructor(props) {
+    super(props);
 
-  const toggle = () => setModal(!modal);
+    this.state = {
+      isOpen: false,
+    };
+  }
+  openModal = () => this.setState({ isOpen: true });
+  closeModal = () => this.setState({ isOpen: false });
 
-  function saveEmpDetail(e) {
-    args.passemployee(e);
-    toggle();
+  saveEmpDetail(e) {
+    this.props.passemployee(e);
+    this.closeModal(e);
   }
 
-  function cancelForm(e) {
-    toggle(e);
+  cancelForm(e) {
+    this.closeModal(e);
   }
-  return (
-    <div>
-      <h1 style={{ marginTop: '10px', textAlign: 'center' }}> Employee List</h1>
-      <Button color="primary" style={{ float: 'right' }} onClick={toggle}>
-        Add Employee{' '}
-      </Button>
-      <Modal isOpen={modal} size="lg" toggle={toggle} {...args}>
-        <ModalBody>
-          <button
-            type="button"
-            style={{ float: 'right' }}
-            class="close"
-            color="secondary"
-            onClick={toggle}
-          >
+
+  render() {
+    return (
+      <>
+        <div>
+          <h1 style={{ marginTop: '10px', textAlign: 'center' }}>
             {' '}
-            X
-          </button>
+            Employee List
+          </h1>
+          <Button
+            color="primary"
+            style={{ float: 'right' }}
+            onClick={this.openModal}
+          >
+            Add Employee
+          </Button>
 
-          <RegisterForm
-            totalUsers={args.totalUsers}
-            saveEmpDetail={(e) => saveEmpDetail(e)}
-            cancelForm={(e) => cancelForm(e)}
-          />
-        </ModalBody>
-      </Modal>
-    </div>
-  );
+          <Modal size="xl" show={this.state.isOpen} onHide={this.closeModal}>
+            <RegisterForm1
+              totalUsers={this.props.totalUsers}
+              saveEmpDetail={(e) => this.saveEmpDetail(e)}
+              cancelForm={(e) => this.cancelForm(e)}
+            />
+          </Modal>
+        </div>
+      </>
+    );
+  }
 }
-
 export default Addmodel;
-
-// import React, { Component } from 'react';
-// import { Modal, Button } from 'react-bootstrap';
-// import RegisterForm from './components/RegisterForm.js';
-
-// class Addmodel extends Component {
-//   state = {
-//     isOpen: false,
-//   };
-
-//   openModal = () => this.setState({ isOpen: true });
-//   closeModal = () => this.setState({ isOpen: false });
-
-//   saveEmpDetail(e) {
-//     this.props.passemployee(e);
-//     this.closeModal(e);
-//   }
-
-//   cancelForm(e) {
-//     this.closeModal(e);
-//   }
-
-//   render() {
-//     return (
-//       <>
-//         <div>
-//           <h1 style={{ marginTop: '10px', textAlign: 'center' }}>
-//             {' '}
-//             Employee List
-//           </h1>
-//           <Button
-//             color="primary"
-//             style={{ float: 'right' }}
-//             onClick={this.openModal}
-//           >
-//             Add Employee
-//           </Button>
-
-//           <Modal show={this.state.isOpen} onHide={this.closeModal}>
-//             <RegisterForm
-//               saveEmpDetail={(e) => this.saveEmpDetail(e)}
-//               cancelForm={(e) => this.cancelForm(e)}
-//             />
-//           </Modal>
-//         </div>
-//       </>
-//     );
-//   }
-// }
-// export default Addmodel;
