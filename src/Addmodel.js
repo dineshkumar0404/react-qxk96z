@@ -22,7 +22,7 @@ function Addmodel(args) {
       <Button color="primary" style={{ float: 'right' }} onClick={toggle}>
         Add Employee{' '}
       </Button>
-      <Modal isOpen={modal} size="lg" toggle={toggle} {...args}>
+      <Modal isOpen={modal} size="xl" toggle={toggle} {...args}>
         <ModalBody>
           <button
             type="button"
