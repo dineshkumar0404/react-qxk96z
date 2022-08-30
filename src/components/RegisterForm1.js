@@ -6,10 +6,47 @@ import './RegisterForm.css';
 class Register extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      fields: this.props.data ? this.props.data : {},
+      fields: props.data ? props.data : {},
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  validationSchema() {
+    return Yup.object().shape({
+      // id: Yup.number()
+      //     .required('Employee ID is required'),
+      employeename: Yup.string()
+        .matches(/^[aA-zZ\s]+$/, 'Only alphabets are allowed for this field ')
+        .required('EmployeeName is required')
+        .min(4, 'Minimum 4 Character required'),
+
+      employeesalary: Yup.number().required('EmployeeSalary is required'),
+
+      employeeage: Yup.number()
+        .min(18, 'You must be at least 18 years')
+        .max(60, 'You must be at most 60 years')
+        .required('EmployeeAge is required'),
+      email: Yup.string()
+        .email('Email is invalid')
+        .required('Email is required'),
+      designation: Yup.string()
+        .matches(/^[aA-zZ\s]+$/, 'Only alphabets are allowed for this field ')
+        .required('EmployeeDesignation is required'),
+
+      // file: Yup.mixed()
+      //   .required('File required')
+    });
+  }
+  handleChange(e) {
+    let fields = this.state.fields;
+    fields[e.target.name] = e.target.value;
+
+    if (!this.props.data) {
+      fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+    }
+    this.setState({ fields });
   }
 
   handleFileRead = async (event) => {
@@ -32,68 +69,69 @@ class Register extends React.Component {
     });
   };
 
+  handleSubmit(fields) {
+    // console.log(this.state.fields);
+    fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+    const save = {
+      ...this.state.fields,
+      id: fields.id,
+      employeename: fields.employeename,
+      employeesalary: fields.employeesalary,
+      employeeage: fields.employeeage,
+      email: fields.email,
+      designation: fields.designation,
+    };
+    console.log(save);
+    if (this.props.data) {
+      alert('update');
+      this.props.updateForm(save);
+    } else {
+      alert('add');
+      this.props.saveEmpDetail(save);
+    }
+
+    //     if (this.props.data) {
+    //         alert("hai")
+    //         fields["id"] = `SPC000${this.props.totalUsers + 1}`
+    //         this.props.updateForm(this.state.fields);
+
+    //   }
+    //   else {
+    //     fields["id"] = `SPC000${this.props.totalUsers + 1}`
+    //     alert("hello")
+    //          this.props.saveEmpDetail(fields);
+
+    //   }
+  }
+
   cancelForm(e) {
     this.props.cancelForm(e);
   }
 
   render() {
+    const initialValues = {
+      id: '',
+
+      employeename: '',
+
+      employeesalary: '',
+
+      employeeage: '',
+
+      email: '',
+
+      designation: '',
+
+      file: '',
+    };
+
     return (
-      <Formik
-        initialValues={{
-          id: '',
-
-          employeename: '',
-
-          employeesalary: '',
-
-          employeeage: '',
-
-          email: '',
-
-          designation: '',
-
-          file: '',
-        }}
-        validationSchema={Yup.object().shape({
-          // id: Yup.number()
-          //     .required('Employee ID is required'),
-          employeename: Yup.string()
-            .matches(
-              /^[aA-zZ\s]+$/,
-              'Only alphabets are allowed for this field '
-            )
-            .required('EmployeeName is required')
-            .min(4, 'Minimum 4 Character required'),
-
-          employeesalary: Yup.number().required('EmployeeSalary is required'),
-          // .matches(/^[0-9\s]+$/, "Only numbers are allowed for this field "),
-
-          employeeage: Yup.number()
-            .min(18, 'You must be at least 18 years')
-            .max(60, 'You must be at most 60 years')
-            .required('EmployeeAge is required'),
-          email: Yup.string()
-            .email('Email is invalid')
-            .required('Email is required'),
-          designation: Yup.string()
-            .matches(
-              /^[aA-zZ\s]+$/,
-              'Only alphabets are allowed for this field '
-            )
-            .required('EmployeeDesignation is required'),
-
-          // file: Yup.mixed()
-          //   .required('File required')
-        })}
-        onSubmit={(fields) => {
-          // alert('SUCCESS!! :-)\n\n' + JSON.stringify(fields, null, 4))
-
-          fields['id'] = `SPC000${this.props.totalUsers + 1}`;
-          this.props.saveEmpDetail(fields);
-
-          console.log(fields.name);
-        }}
-        render={({ errors, status, touched }) => (
+      <div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={this.validationSchema}
+          onSubmit={this.handleSubmit}
+        >
           <Form>
             <div className="container-1" id="form">
               {!this.props.data && (
@@ -118,17 +156,13 @@ class Register extends React.Component {
                     type="text"
                     name="id"
                     autoComplete="off"
-                    disable={true}
-                    className={
-                      'form-control' +
-                      (errors.id && touched.id ? ' is-invalid' : '')
-                    }
+                    disable="true"
                     value={`SPC000${this.props.totalUsers + 1}`}
                   />
                   <ErrorMessage
                     name="id"
                     component="div"
-                    className="invalid-feedback"
+                    className="text-danger"
                   />
                 </div>
 
@@ -144,19 +178,27 @@ class Register extends React.Component {
                     className="short-div"
                     style={{ position: 'relative', zIndex: '1' }}
                   >
-                    <img
-                      src={this.state.fields.file}
-                      alt=""
-                      style={{
-                        height: '300px',
-                        width: '360px',
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                        backgroundImage: `url(${''})`,
-                      }}
-                    />
-                    {/* {!this.props.data && <img src={this.state.fields.file} alt="" style={{ height: "300px", width: "370px" }} />} */}
+                    {this.props.data && (
+                      <img
+                        src={this.state.fields.file}
+                        alt=""
+                        style={{
+                          height: '300px',
+                          width: '360px',
+                          backgroundSize: 'cover',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'center',
+                          backgroundImage: `url(${this.props.data.file})`,
+                        }}
+                      />
+                    )}
+                    {!this.props.data && (
+                      <img
+                        src={this.state.fields.file}
+                        alt=""
+                        style={{ height: '300px', width: '370px' }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -177,24 +219,34 @@ class Register extends React.Component {
                 <label>-</label>
               </div>
               <div className="col-md-4">
-                <Field
-                  type="text"
-                  name="employeename"
-                  minLength="4"
-                  maxLength="24"
-                  autoComplete="off"
-                  className={
-                    'form-control' +
-                    (errors.employeename && touched.employeename
-                      ? ' is-invalid'
-                      : '')
-                  }
-                  // value={this.state.fields.employeename}
-                />
+                {!this.props.data && (
+                  <Field
+                    type="text"
+                    name="employeename"
+                    minLength="4"
+                    maxLength="24"
+                    autoComplete="off"
+                  />
+                )}
+
+                {this.props.data && (
+                  <Field
+                    type="text"
+                    name="employeename"
+                    minLength="4"
+                    maxLength="24"
+                    autoComplete="off"
+                    value={
+                      this.props.data ? this.state.fields.employeename : ''
+                    }
+                    onChange={this.handleChange}
+                  />
+                )}
+
                 <ErrorMessage
                   name="employeename"
                   component="div"
-                  className="invalid-feedback"
+                  className="text-danger"
                 />
               </div>
 
@@ -216,23 +268,32 @@ class Register extends React.Component {
                 <label>-</label>
               </div>
               <div className="col-md-4">
-                <Field
-                  type="number"
-                  name="employeesalary"
-                  style={{ marginTop: '10px' }}
-                  autoComplete="off"
-                  className={
-                    'form-control' +
-                    (errors.employeesalary && touched.employeesalary
-                      ? ' is-invalid'
-                      : '')
-                  }
-                  // value={this.state.fields.employeesalary}
-                />
+                {!this.props.data && (
+                  <Field
+                    type="number"
+                    name="employeesalary"
+                    style={{ marginTop: '10px' }}
+                    autoComplete="off"
+                  />
+                )}
+
+                {this.props.data && (
+                  <Field
+                    type="number"
+                    name="employeesalary"
+                    style={{ marginTop: '10px' }}
+                    autoComplete="off"
+                    value={
+                      this.props.data ? this.state.fields.employeesalary : ''
+                    }
+                    onChange={this.handleChange}
+                  />
+                )}
+
                 <ErrorMessage
                   name="employeesalary"
                   component="div"
-                  className="invalid-feedback"
+                  className="text-danger"
                 />
               </div>
 
@@ -254,22 +315,24 @@ class Register extends React.Component {
                 <label>-</label>
               </div>
               <div className="col-md-4">
-                <Field
-                  type="number"
-                  name="employeeage"
-                  autoComplete="off"
-                  className={
-                    'form-control' +
-                    (errors.employeeage && touched.employeeage
-                      ? ' is-invalid'
-                      : '')
-                  }
-                  //  value={this.state.fields.employeeage}
-                />
+                {!this.props.data && (
+                  <Field type="number" name="employeeage" autoComplete="off" />
+                )}
+
+                {this.props.data && (
+                  <Field
+                    type="number"
+                    name="employeeage"
+                    autoComplete="off"
+                    value={this.props.data ? this.state.fields.employeeage : ''}
+                    onChange={this.handleChange}
+                  />
+                )}
+
                 <ErrorMessage
                   name="employeeage"
                   component="div"
-                  className="invalid-feedback"
+                  className="text-danger"
                 />
               </div>
 
@@ -291,20 +354,23 @@ class Register extends React.Component {
                 <label>-</label>
               </div>
               <div className="col-md-4">
-                <Field
-                  type="text"
-                  name="email"
-                  autoComplete="off"
-                  className={
-                    'form-control' +
-                    (errors.email && touched.email ? ' is-invalid' : '')
-                  }
-                  //    value={this.state.fields.email}
-                />
+                {!this.props.data && (
+                  <Field type="text" name="email" autoComplete="off" />
+                )}
+                {this.props.data && (
+                  <Field
+                    type="text"
+                    name="email"
+                    autoComplete="off"
+                    value={this.props.data ? this.state.fields.email : ''}
+                    onChange={this.handleChange}
+                  />
+                )}
+
                 <ErrorMessage
                   name="email"
                   component="div"
-                  className="invalid-feedback"
+                  className="text-danger"
                 />
               </div>
 
@@ -314,19 +380,27 @@ class Register extends React.Component {
                 </label>
               </div>
               <div className="col-md-3 mt-1">
-                <input
-                  type="file"
-                  name="file"
-                  className={
-                    'form-control' +
-                    (errors.file && touched.file ? ' is-invalid' : '')
-                  }
-                  onChange={(e) => this.handleFileRead(e)}
-                />
+                {!this.props.data && (
+                  <Field
+                    type="file"
+                    name="file"
+                    onChange={(e) => this.handleFileRead(e)}
+                  />
+                )}
+
+                {this.props.data && (
+                  <Field
+                    type="file"
+                    name="file"
+                    onChange={(e) => this.handleFileRead(e)}
+                    value=""
+                  />
+                )}
+
                 <ErrorMessage
                   name="file"
                   component="div"
-                  className="invalid-feedback"
+                  className="text-danger"
                 />
               </div>
             </div>
@@ -346,22 +420,24 @@ class Register extends React.Component {
                 <label>-</label>
               </div>
               <div className="col-md-4">
-                <Field
-                  type="text"
-                  name="designation"
-                  autoComplete="off"
-                  className={
-                    'form-control' +
-                    (errors.designation && touched.designation
-                      ? ' is-invalid'
-                      : '')
-                  }
-                  //   value={this.state.fields.designation}
-                />
+                {!this.props.data && (
+                  <Field type="text" name="designation" autoComplete="off" />
+                )}
+
+                {this.props.data && (
+                  <Field
+                    type="text"
+                    name="designation"
+                    autoComplete="off"
+                    value={this.props.data ? this.state.fields.designation : ''}
+                    onChange={this.handleChange}
+                  />
+                )}
+
                 <ErrorMessage
                   name="designation"
                   component="div"
-                  className="invalid-feedback"
+                  className="text-danger"
                 />
               </div>
               <div className="col-md-4"></div>
@@ -370,7 +446,11 @@ class Register extends React.Component {
             <div className="row mb-3 mt-4">
               <div className="col-md-3"></div>
               <div className="col-md-3">
-                <input type="submit" className="button" value="SUBMIT" />
+                <input
+                  type="submit"
+                  className="button"
+                  value={this.props.data ? 'UPDATE' : 'SUBMIT'}
+                />
               </div>
 
               <div className="col-md-3">
@@ -384,8 +464,8 @@ class Register extends React.Component {
               <div className="col-md-3"></div>
             </div>
           </Form>
-        )}
-      />
+        </Formik>
+      </div>
     );
   }
 }
