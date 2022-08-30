@@ -40,19 +40,25 @@ class Register extends React.Component {
     });
   }
   handleChange(e) {
-    let fields = this.state.fields;
-    fields[e.target.name] = e.target.value;
-
     if (!this.props.data) {
-      fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+      let fields = this.state.fields;
+      fields[e.target.name] = e.target.value;
+
+      if (!this.props.data) {
+        fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+      }
+      this.setState({ fields });
     }
-    this.setState({ fields });
+
+    if (this.props.data) {
+      this.setState({ upname: e.target.value });
+    }
   }
 
   handleFileRead = async (event) => {
     const filee = event.target.files[0];
     const file = await this.convertBase64(filee);
-    console.log(file);
+    // console.log(file)
     this.setState({ fields: { ...this.state.fields, file: file } });
   };
 
@@ -71,7 +77,7 @@ class Register extends React.Component {
 
   handleSubmit(fields) {
     // console.log(this.state.fields);
-    fields['id'] = `SPC000${this.props.totalUsers + 1}`;
+    // fields["id"] = `SPC000${this.props.totalUsers + 1}`
     const save = {
       ...this.state.fields,
       id: fields.id,
@@ -82,26 +88,13 @@ class Register extends React.Component {
       designation: fields.designation,
     };
     console.log(save);
+
     if (this.props.data) {
-      alert('update');
       this.props.updateForm(save);
     } else {
-      alert('add');
+      save['id'] = `SPC000${this.props.totalUsers + 1}`;
       this.props.saveEmpDetail(save);
     }
-
-    //     if (this.props.data) {
-    //         alert("hai")
-    //         fields["id"] = `SPC000${this.props.totalUsers + 1}`
-    //         this.props.updateForm(this.state.fields);
-
-    //   }
-    //   else {
-    //     fields["id"] = `SPC000${this.props.totalUsers + 1}`
-    //     alert("hello")
-    //          this.props.saveEmpDetail(fields);
-
-    //   }
   }
 
   cancelForm(e) {
@@ -110,19 +103,19 @@ class Register extends React.Component {
 
   render() {
     const initialValues = {
-      id: '',
+      id: this.props.data ? this.props.data.id : '',
 
-      employeename: '',
+      employeename: this.props.data ? this.props.data.employeename : '',
 
-      employeesalary: '',
+      employeesalary: this.props.data ? this.props.data.employeesalary : '',
 
-      employeeage: '',
+      employeeage: this.props.data ? this.props.data.employeeage : '',
 
-      email: '',
+      email: this.props.data ? this.props.data.email : '',
 
-      designation: '',
+      designation: this.props.data ? this.props.data.designation : '',
 
-      file: '',
+      file: this.props.data ? this.props.data.file : '',
     };
 
     return (
@@ -152,13 +145,27 @@ class Register extends React.Component {
                   <label>-</label>
                 </div>
                 <div className="col-md-4">
-                  <Field
-                    type="text"
-                    name="id"
-                    autoComplete="off"
-                    disable="true"
-                    value={`SPC000${this.props.totalUsers + 1}`}
-                  />
+                  {!this.props.data && (
+                    <Field
+                      type="text"
+                      name="id"
+                      autoComplete="off"
+                      disable="true"
+                      value={`SPC000${this.props.totalUsers + 1}`}
+                    />
+                  )}
+
+                  {this.props.data && (
+                    <Field
+                      type="text"
+                      name="id"
+                      autoComplete="off"
+                      disable="true"
+                      value={this.props.data.id}
+                      // onChange={this.handleChange}
+                    />
+                  )}
+
                   <ErrorMessage
                     name="id"
                     component="div"
