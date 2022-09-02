@@ -4,6 +4,7 @@ import { Modal, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterForm1 from './components/RegisterForm1';
 import { deleteEmployee,addEmployee,fetchEmployee,updateEmployee } from './utils/api/employee';
+// import { PureComponent } from 'react';
 
 
 class App extends Component {
@@ -15,8 +16,8 @@ class App extends Component {
       detailuser: false,
       showModel: false,
       totalUsers: null,
-      indexid: null
-
+      indexid: null,
+     
     }
 
 
@@ -25,15 +26,16 @@ class App extends Component {
   passemployee = async (e) => {
    const empass= await addEmployee(e);
   //  console.log(empass)
+   
     this.state.users.push(empass);
     this.setState({ users: this.state.users });
+    this.forceUpdate();
     console.log("add")
-    
+  
   }
 
   updateForm = async (e) => {
      const empupd=await updateEmployee(e);
-
     //  console.log(empupd)
     this.setState({ showModel: !this.state.showModel });
     this.state.users.splice(this.state.indexid, 1, empupd);
@@ -48,6 +50,7 @@ class App extends Component {
       await deleteEmployee(empdel.id);
       this.state.users.splice(index, 1);
       this.setState({ users: this.state.users });
+      this.forceUpdate();
       console.log("Delete");
 
     }
@@ -77,31 +80,36 @@ class App extends Component {
 
 
 
+
+
+
   render() {
 
-    let DisplayData = this.state.users.map((users, index) => {
+    console.log("--------------------rendering")
+
+    let DisplayData = this.state.users.map((user, index) => {
       return (
 
         <tr key={index} style={{ textAlign: 'center' }}>
-          <td>{users.id}</td>
-          <td>{users.employeename}</td>
-          <td>{users.employeesalary}</td>
-          <td>{users.employeeage}</td>
-          <td>{users.email}</td>
-          <td>{users.designation}</td>
+          <td>{user.id}</td>
+          <td>{user.employeename}</td>
+          <td>{user.employeesalary}</td>
+          <td>{user.employeeage}</td>
+          <td>{user.email}</td>
+          <td>{user.designation}</td>
           {/* <td><img src={users.file} style={{ height: "50px" }} alt="logo" /></td> */}
 
           <td>
             <button
               className="btn btn-danger m-1"
-              onClick={() => { this.DeleteRow(index, users.employeename); }}>
+              onClick={() => { this.DeleteRow(index, user.employeename); }}>
               Delete
             </button>
-            <button className="btn btn-info m-1" onClick={() => this.Update(index, users)}>
+            <button className="btn btn-info m-1" onClick={() => this.Update(index, user)}>
               Update
             </button>
 
-            <button className="btn btn-info m-1" onClick={() => this.Details(index, users)}>
+            <button className="btn btn-info m-1" onClick={() => this.Details(index, user)}>
               Details
             </button>
           </td>
@@ -110,6 +118,9 @@ class App extends Component {
     });
 
     return (
+
+
+
       <div>
         <Addmodel
           passemployee={(e) => this.passemployee(e)}
@@ -257,7 +268,7 @@ class App extends Component {
                       type="button"
                       className="btn btn-primary text-center m-1" onClick={() => {
                         this.setState({ detailuser: !this.state.detailuser })
-                        this.updateForm(this.state.indexid, 1, this.state.users)
+                        this.Update(this.state.indexid,this.state.selecteduser)
 
 
                       }} >
